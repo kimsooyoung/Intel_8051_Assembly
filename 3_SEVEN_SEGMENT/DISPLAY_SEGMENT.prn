@@ -1,0 +1,28 @@
+ 8000           	ORG 8000H
+                	; Memory Location of 7-Segment Disp
+                	; similar to #define in C Language
+ FFC0           	SEVENSEG EQU 0FFC0H
+                
+ 8000           START:
+ 8000 74F8      	MOV A, #11111000B
+ 8002 12800A    	CALL DISPLAY
+                
+ 8005           LOOP:
+ 8005 12800A    	CALL DISPLAY
+ 8008 80FB      	JMP LOOP
+                
+ 800A           DISPLAY:
+ 800A 90FFC0    	MOV DPTR, #SEVENSEG
+ 800D F0        	MOVX @DPTR, A
+ 800E 22        	RET
+                
+ 800F 80FE      FINISH: JMP FINISH 
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\3_SEVEN_SEGMENT\DISPLAY_SEGMENT.ASM
+
+
+

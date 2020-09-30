@@ -1,0 +1,39 @@
+ 8000           	ORG 8000H
+                	; Memory Location of 7-Segment Disp
+ FFC0           	SEVENSEG EQU 0FFC0H
+                
+                ; Initialize Accumulator and Carry Bit
+ 8000           START:
+ 8000 74FF      	MOV A, #11111111B
+                
+ 8002           ; Main Loop	
+ 8002           LOOP:
+ 8002 128018    	CALL DISPLAY
+ 8005 12800B    	CALL DELAY
+ 8008 33        	RLC A
+ 8009 80F7      	JMP LOOP
+                
+ 800B           ; Delay Function
+ 800B 78FF      DELAY:	MOV R0, #0FFH
+ 800D 79FF      DELAY1: MOV R1, #0FFH
+ 800F 7A02      DELAY2: MOV R2, #002H
+                
+ 8011 DAFE      DELAY3: DJNZ R2, DELAY3
+ 8013 D9FA      	DJNZ R1, DELAY2
+ 8015 D8F6      	DJNZ R0, DELAY1
+ 8017 22        	RET
+                
+ 8018           ; Display Accum to 7-Segment Function
+ 8018           DISPLAY:
+ 8018 90FFC0    	MOV DPTR, #SEVENSEG
+ 801B F0        	MOVX @DPTR, A
+ 801C 22        	RET
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\3_SEVEN_SEGMENT\DISPLAY_ROTATING_SEGMENTS.ASM
+
+
+

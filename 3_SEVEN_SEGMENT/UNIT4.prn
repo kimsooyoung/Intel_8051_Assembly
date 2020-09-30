@@ -1,0 +1,102 @@
+                ;Assignment 1: Write a program to display each number
+                
+ 8000           	ORG 8000H
+                	; Memory Location of 7-Segment
+ FFC0           	SEVENSEG EQU 0FFC0H
+                	; Memory Location of Digits
+ 0020           	DIGITMEM EQU 20H
+                
+ 8000           START:
+                	; Starting Memory Location in R0 
+ 8000 7820      	MOV R0, #DIGITMEM 
+                
+ 8002           	; Store Digit Patterns in Memory
+ 8002 76C0      	MOV @R0, #0C0H
+ 8004 08        	INC R0
+ 8005 76F9      	MOV @R0, #0F9H
+ 8007 08        	INC R0
+ 8008 76A4      	MOV @R0, #0A4H
+ 800A 08        	INC R0
+ 800B 76B0      	MOV @R0, #0B0H
+ 800D 08        	INC R0
+ 800E 7699      	MOV @R0, #99H
+ 8010 08        	INC R0
+ 8011 7692      	MOV @R0, #92H
+ 8013 08        	INC R0
+ 8014 7682      	MOV @R0, #82H
+ 8016 08        	INC R0
+ 8017 76D8      	MOV @R0, #0D8H
+ 8019 08        	INC R0
+ 801A 7680      	MOV @R0, #80H
+ 801C 08        	INC R0
+ 801D 7690      	MOV @R0, #90H
+ 801F 08        	INC R0
+                
+ 8020           	; Initialize number to display
+ 8020 7900      	MOV R1, #0
+                
+ 8022           ; Main Program
+ 8022           LOOP:
+ 8022           	; Display R1 on the 7-Segment
+ 8022 128042    	CALL GETDIGIT
+ 8025 12803D    	CALL DISPLAY
+                
+ 8028           	; Wait one second
+ 8028 128030    	CALL DELAY
+                
+ 802B           	; Increment R1
+ 802B 128048    	CALL INCRESE
+                
+ 802E           	; Repeat the Loop
+ 802E 80F2      	JMP LOOP
+                
+ 8030 7A20      DELAY:  MOV R2, #20H
+ 8032 7BFF      DELAY1: MOV R3, #0FFH
+ 8034 7CFF      DELAY2: MOV R4, #0FFH
+                
+ 8036           ;DELAY:  MOV R2, #01H
+ 8036           ;DELAY1: MOV R3, #01H
+ 8036           ;DELAY2: MOV R4, #01H
+                
+ 8036 DCFE      DELAY3: DJNZ R4, DELAY3
+ 8038 DBFA      	DJNZ R3, DELAY2
+ 803A DAF6      	DJNZ R2, DELAY1
+ 803C 22        	RET
+                
+ 803D           ; Display from Accum to 7-Seg
+ 803D           DISPLAY:	
+ 803D 90FFC0    	MOV DPTR, #SEVENSEG
+ 8040 F0        	MOVX @DPTR, A
+ 8041 22        	RET
+                
+ 8042           ; Get the Digit Pattern of R1
+ 8042           ; Load pattern in the Accumulator
+ 8042           GETDIGIT:
+ 8042 7420      	MOV A, #DIGITMEM
+ 8044 29        	ADD A, R1
+ 8045 F8        	MOV R0, A
+ 8046 E6        	MOV A, @R0
+ 8047 22        	RET
+                
+ 8048           ; Increase Function
+ 8048           INCRESE:
+ 8048 09        	INC R1
+ 8049 E9        	MOV A, R1
+ 804A 940A      	SUBB A, #10
+ 804C 7003      	JNZ SKIP
+ 804E 7900      	MOV R1, #0
+ 8050 22        	RET
+ 8051           SKIP:
+ 8051 22        	RET
+                
+ 8052           ; Finish with an Infinite Loop
+ 8052 80FE      FINISH: JMP FINISH
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\3_SEVEN_SEGMENT\UNIT4.ASM
+
+
+

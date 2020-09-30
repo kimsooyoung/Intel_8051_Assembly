@@ -1,0 +1,80 @@
+ 8000           	ORG 8000H
+                	; Memory Location of 7-Segment
+ FFC0           	SEVENSEG EQU 0FFC0H
+                	; Memory Location of Digits
+ 0020           	DIGITMEM EQU 20H
+                
+ 8000           START:
+                	; Starting Memory Location in R0 
+ 8000 7820      	MOV R0, #DIGITMEM 
+                
+ 8002           	; Store Digit Patterns in Memory
+ 8002 76C0      	MOV @R0, #0C0H
+ 8004 08        	INC R0
+ 8005 76F9      	MOV @R0, #0F9H
+ 8007 08        	INC R0
+ 8008 76A4      	MOV @R0, #0A4H
+ 800A 08        	INC R0
+ 800B 76B0      	MOV @R0, #0B0H
+ 800D 08        	INC R0
+ 800E 7699      	MOV @R0, #99H
+ 8010 08        	INC R0
+ 8011 7692      	MOV @R0, #92H
+ 8013 08        	INC R0
+ 8014 7682      	MOV @R0, #82H
+ 8016 08        	INC R0
+ 8017 76D8      	MOV @R0, #0D8H
+ 8019 08        	INC R0
+ 801A 7680      	MOV @R0, #80H
+ 801C 08        	INC R0
+ 801D 7690      	MOV @R0, #90H
+ 801F 08        	INC R0
+                
+ 8020           ; Main Program
+ 8020           LOOP:
+ 8020           	; Choose Number 5 for Display
+ 8020 7905      	MOV R1, #5
+                
+ 8022           	; Get the Digit Pattern of 5
+ 8022           	; Load Pattern to the Accumulator
+ 8022 12803F    	CALL GETDIGIT
+                
+ 8025 12803A    	CALL DISPLAY
+ 8028 12802D    	CALL DELAY
+ 802B 80F3      	JMP LOOP
+                
+ 802D 78FF      DELAY: 	MOV R0, #0FFH
+ 802F 79FF      DELAY1: MOV R1, #0FFH
+ 8031 7A02      DELAY2: MOV R2, #02H
+                
+ 8033 DAFE      DELAY3: DJNZ R2, DELAY3
+ 8035 D9FA      	DJNZ R1, DELAY2
+ 8037 D8F6      	DJNZ R0, DELAY1
+ 8039 22        	RET
+                
+ 803A           ; Display from Accum to 7-Seg
+ 803A           DISPLAY:	
+ 803A 90FFC0    	MOV DPTR, #SEVENSEG
+ 803D F0        	MOVX @DPTR, A
+ 803E 22        	RET
+                
+ 803F           ; Get the Digit Pattern of R1
+ 803F           ; Load pattern in the Accumulator
+ 803F           GETDIGIT:
+ 803F 7420      	MOV A, #DIGITMEM
+ 8041 29        	ADD A, R1
+ 8042 F8        	MOV R0, A
+ 8043 E6        	MOV A, @R0
+ 8044 22        	RET
+                
+ 8045           ; Finish with an Infinite Loop
+ 8045 80FE      FINISH: JMP FINISH
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\3_SEVEN_SEGMENT\STORE_DIGIT.ASM
+
+
+
