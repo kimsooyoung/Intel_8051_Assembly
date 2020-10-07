@@ -1,0 +1,64 @@
+
+ORG 8000H 
+
+; LIST[4] = {6, 2, 7, 5};
+
+MOV R0, #20H
+MOV @R0, #6
+INC R0
+MOV @R0, #2H
+INC R0
+MOV @R0, #7
+INC R0
+MOV @R0, #5
+
+; R2 = LIST; R3 = J;
+; R4 = K;    R5 = TEMP;
+
+MOV R2, #20H
+MOV R3, #3 ; SIZE OF ARRAY - 1
+
+OUTER:
+	;K = J - 1
+	MOV A, R3 
+	MOV R4, A
+	DEC R4
+
+INNER:
+	; R0 POINTS TO LIST[J]
+	MOV A, R2
+	ADD A, R3
+	MOV R0, A
+	; R1 POINTS TO LIST[K]
+	MOV A, R2
+	ADD A, R4
+	MOV R1, A
+
+	; IF (LIST[K] > LIST[J]) THEN SWAP
+	MOV A, @R1
+	SUBB A, @R0
+	JC AFTERSWAP
+
+;;;;; SWAP ;;;;;;;
+
+; TEMP = LIST[K]
+MOV A, @R1
+MOV R5, A
+
+; LIST[K] = LIST[J]
+MOV A, @R0
+MOV @R1, A
+
+; LIST[J] = TEMP
+MOV A, R5
+MOV @R0, A
+
+;;;;; END OF SWAP ;;;;;
+
+AFTERSWAP:
+	; K--
+	DEC R4
+	CJNE R4, #-1, INNER
+	; J--
+	DJNZ R3, OUTER
+	JMP $

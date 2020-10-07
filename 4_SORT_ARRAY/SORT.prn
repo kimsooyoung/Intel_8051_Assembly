@@ -1,0 +1,73 @@
+                
+ 8000           ORG 8000H 
+                
+                ; LIST[4] = {6, 2, 7, 5};
+                
+ 8000 7820      MOV R0, #20H
+ 8002 7606      MOV @R0, #6
+ 8004 08        INC R0
+ 8005 7602      MOV @R0, #2H
+ 8007 08        INC R0
+ 8008 7607      MOV @R0, #7
+ 800A 08        INC R0
+ 800B 7605      MOV @R0, #5
+                
+ 800D           ; R2 = LIST; R3 = J;
+ 800D           ; R4 = K;    R5 = TEMP;
+                
+ 800D 7A20      MOV R2, #20H
+ 800F 7B03      MOV R3, #3 ; SIZE OF ARRAY - 1
+                
+ 8011           OUTER:
+ 8011           	;K = J - 1
+ 8011 EB        	MOV A, R3 
+ 8012 FC        	MOV R4, A
+ 8013 1C        	DEC R4
+                
+ 8014           INNER:
+ 8014           	; R0 POINTS TO LIST[J]
+ 8014 EA        	MOV A, R2
+ 8015 2B        	ADD A, R3
+ 8016 F8        	MOV R0, A
+ 8017           	; R1 POINTS TO LIST[K]
+ 8017 EA        	MOV A, R2
+ 8018 2C        	ADD A, R4
+ 8019 F9        	MOV R1, A
+                
+ 801A           	; IF (LIST[K] > LIST[J]) THEN SWAP
+ 801A E7        	MOV A, @R1
+ 801B 96        	SUBB A, @R0
+ 801C 4006      	JC AFTERSWAP
+                
+ 801E           ;;;;; SWAP ;;;;;;;
+                
+ 801E           ; TEMP = LIST[K]
+ 801E E7        MOV A, @R1
+ 801F FD        MOV R5, A
+                
+ 8020           ; LIST[K] = LIST[J]
+ 8020 E6        MOV A, @R0
+ 8021 F7        MOV @R1, A
+                
+ 8022           ; LIST[J] = TEMP
+ 8022 ED        MOV A, R5
+ 8023 F6        MOV @R0, A
+                
+ 8024           ;;;;; END OF SWAP ;;;;;
+                
+ 8024           AFTERSWAP:
+ 8024           	; K--
+ 8024 1C        	DEC R4
+ 8025 BCFFEC    	CJNE R4, #-1, INNER
+ 8028           	; J--
+ 8028 DBE7      	DJNZ R3, OUTER
+ 802A 80FE      	JMP $
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\INTEL_8051_ASSEMBLY\4_SORT_ARRAY\SORT.ASM
+
+
+
