@@ -1,0 +1,81 @@
+ 8000           ORG 8000H
+                
+ FFC3           SEG1 EQU 0FFC3H
+ FFC2           SEG2 EQU 0FFC2H
+ FFC1           SEG3 EQU 0FFC1H
+                
+ 8000           START:
+ 8000 7800      	MOV R0, #00H
+ 8002 7900      	MOV R1, #00H
+ 8004 7A00      	MOV R2, #00H
+                
+ 8006           LOOP:
+ 8006 128036    	CALL DISPLAY_SEGMENT
+ 8009 12802D    	CALL DELAY
+ 800C 128020    	CALL INCREMENT_ARRAY
+ 800F 80F5      	JMP LOOP
+                
+ 8011           INCREMENT_R0:
+ 8011 E8        	MOV A, R0
+ 8012 04        	INC A
+ 8013 D4        	DA A
+ 8014 F8        	MOV R0, A
+ 8015 22        	RET
+                
+ 8016           INCREMENT_R1:
+ 8016 E9        	MOV A, R1
+ 8017 04        	INC A
+ 8018 D4        	DA A
+ 8019 F9        	MOV R1, A
+ 801A 22        	RET
+                
+ 801B           INCREMENT_R2:
+ 801B EA        	MOV A, R2
+ 801C 04        	INC A
+ 801D D4        	DA A
+ 801E FA        	MOV R2, A
+ 801F 22        	RET
+                
+ 8020           INCREMENT_ARRAY:
+ 8020 111B      	CALL INCREMENT_R2
+ 8022 BA0007    	CJNE R2, #00H, FINISH
+ 8025 1116      	CALL INCREMENT_R1
+ 8027 B90002    	CJNE R1, #00H, FINISH
+ 802A 1111      	CALL INCREMENT_R0
+                
+ 802C           FINISH:
+ 802C 22        	RET
+                
+                
+ 802D 7E80      DELAY: MOV R6, #80H
+ 802F 7F80      DELAY1: MOV R7, #80H
+ 8031 DFFE      DELAY2: DJNZ R7, DELAY2
+ 8033 DEFA      	DJNZ R6, DELAY1
+ 8035 22        	RET
+                
+                
+ 8036           DISPLAY_SEGMENT:
+ 8036 E8        	MOV A, R0
+ 8037 90FFC3    	MOV DPTR, #SEG1
+ 803A F0        	MOVX @DPTR, A
+                
+ 803B E9        	MOV A, R1
+ 803C 90FFC2    	MOV DPTR, #SEG2
+ 803F F0        	MOVX @DPTR, A
+                
+ 8040 EA        	MOV A, R2
+ 8041 90FFC1    	MOV DPTR, #SEG3
+ 8044 F0        	MOVX @DPTR, A
+                
+ 8045 22        	RET
+                
+ 8046           END
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\INTEL_8051_ASSEMBLY\5_SEVEN_SEGMENT_ARRAY\SEGMENT_COUNTER.ASM
+
+
+

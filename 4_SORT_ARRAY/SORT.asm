@@ -2,6 +2,7 @@
 ORG 8000H 
 
 ; LIST[4] = {6, 2, 7, 5};
+; R0 = &LIST
 
 MOV R0, #20H
 MOV @R0, #6
@@ -23,7 +24,7 @@ MOV R3, #3 ; SIZE OF ARRAY - 1
 
 OUTER:
 	;K = J - 1
-	MOV A, R3 
+	MOV A, R3
 	MOV R4, A
 	DEC R4
 
@@ -41,6 +42,7 @@ INNER:
 	MOV A, @R1
 	SUBB A, @R0
 	JC AFTERSWAP
+	; 작은거에서 큰거 빼면 CARRY BIT 발생
 
 ;;;;; SWAP ;;;;;;;
 

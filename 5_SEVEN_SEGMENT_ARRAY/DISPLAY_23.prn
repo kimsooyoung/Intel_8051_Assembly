@@ -1,0 +1,30 @@
+ 8000           	ORG 8000H
+                	; MEMORY LOCATIONS OF SEVEN-SEGMENT ARRAY
+                	; SEG1 IS THE LEFT PAIR
+                	; SEG2 IS THE MIDDLE PAIR
+                	; SEG3 IS THE RIGHT PAIR
+                
+ FFC3           	SEG1 EQU 0FFC3h
+ FFC2           	SEG2 EQU 0FFC2h
+ FFC1           	SEG3 EQU 0FFC1h
+                
+                	; DISPLAY '23' ON MIDDLE TWO DISPLAYS
+                	; IN THE SEVEN-SEGMENT ARRAY
+                
+ 8000           START:
+ 8000 7423      	MOV A, #00100011b
+ 8002 90FFC2    	MOV DPTR, #SEG2
+ 8005           	; Only MOVX ABLE TO STORE EXTERNAL 16BIT RAM
+ 8005 F0        	MOVX @DPTR, A
+                	
+ 8006 80FE      	JMP $
+ 8008           END
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\INTEL_8051_ASSEMBLY\5_SEVEN_SEGMENT_ARRAY\DISPLAY_23.ASM
+
+
+

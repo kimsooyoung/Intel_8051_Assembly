@@ -1,0 +1,74 @@
+ 8000           ORG 8000H
+                
+ FFC3           SEG1 EQU 0FFC3H
+ FFC2           SEG2 EQU 0FFC2H
+ FFC1           SEG3 EQU 0FFC1H
+                
+ 8000           START:
+ 8000 7800      	MOV R0, #00H
+ 8002 7999      	MOV R1, #99H
+ 8004 7A99      	MOV R2, #99H
+                	
+ 8006 128023    	CALL INCREMENT_ARRAY
+ 8009 128023    	CALL INCREMENT_ARRAY
+ 800C 128023    	CALL INCREMENT_ARRAY
+                
+ 800F 128030    	CALL DISPLAY_SEGMENT
+                
+ 8012 80FE      	JMP $
+                
+ 8014           INCREMENT_R0:
+ 8014 E8        	MOV A, R0
+ 8015 04        	INC A
+ 8016 D4        	DA A
+ 8017 F8        	MOV R0, A
+ 8018 22        	RET
+                
+ 8019           INCREMENT_R1:
+ 8019 E9        	MOV A, R1
+ 801A 04        	INC A
+ 801B D4        	DA A
+ 801C F9        	MOV R1, A
+ 801D 22        	RET
+                
+ 801E           INCREMENT_R2:
+ 801E EA        	MOV A, R2
+ 801F 04        	INC A
+ 8020 D4        	DA A
+ 8021 FA        	MOV R2, A
+ 8022 22        	RET
+                
+ 8023           INCREMENT_ARRAY:
+ 8023 111E      	CALL INCREMENT_R2
+ 8025 BA0007    	CJNE R2, #00H, FINISH
+ 8028 1119      	CALL INCREMENT_R1
+ 802A B90002    	CJNE R1, #00H, FINISH
+ 802D 1114      	CALL INCREMENT_R0
+                	
+                
+ 802F           FINISH:
+ 802F 22        	RET
+                
+ 8030           DISPLAY_SEGMENT:
+ 8030 E8        	MOV A, R0
+ 8031 90FFC3    	MOV DPTR, #SEG1
+ 8034 F0        	MOVX @DPTR, A
+                
+ 8035 E9        	MOV A, R1
+ 8036 90FFC2    	MOV DPTR, #SEG2
+ 8039 F0        	MOVX @DPTR, A
+                
+ 803A EA        	MOV A, R2
+ 803B 90FFC1    	MOV DPTR, #SEG3
+ 803E F0        	MOVX @DPTR, A
+                
+ 803F 22        	RET
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\INTEL_8051_ASSEMBLY\5_SEVEN_SEGMENT_ARRAY\DISPLAY_WITH_INCREMENT.ASM
+
+
+
