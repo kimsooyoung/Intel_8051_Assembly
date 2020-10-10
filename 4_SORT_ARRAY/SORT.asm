@@ -6,14 +6,17 @@ ORG 8000H
 MOV R0, #20H
 MOV @R0, #6
 INC R0
-MOV @R0, #2H
+MOV @R0, #2
 INC R0
 MOV @R0, #7
 INC R0
 MOV @R0, #5
 
-; R2 = LIST; R3 = J;
-; R4 = K;    R5 = TEMP;
+
+; R2 = LIST;
+; R3 = J;
+; R4 = K;
+; R5 = TEMP;
 
 MOV R2, #20H
 MOV R3, #3 ; SIZE OF ARRAY - 1

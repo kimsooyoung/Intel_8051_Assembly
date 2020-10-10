@@ -6,62 +6,66 @@
  8000 7820      MOV R0, #20H
  8002 7606      MOV @R0, #6
  8004 08        INC R0
- 8005 7602      MOV @R0, #2H
+ 8005 7602      MOV @R0, #2
  8007 08        INC R0
  8008 7607      MOV @R0, #7
  800A 08        INC R0
  800B 7605      MOV @R0, #5
                 
- 800D           ; R2 = LIST; R3 = J;
- 800D           ; R4 = K;    R5 = TEMP;
+ 800D 80FE      JMP $
                 
- 800D 7A20      MOV R2, #20H
- 800F 7B03      MOV R3, #3 ; SIZE OF ARRAY - 1
+ 800F           ; R2 = LIST;
+ 800F           ; R3 = J;
+ 800F           ; R4 = K;
+ 800F           ; R5 = TEMP;
                 
- 8011           OUTER:
- 8011           	;K = J - 1
- 8011 EB        	MOV A, R3 
- 8012 FC        	MOV R4, A
- 8013 1C        	DEC R4
+ 800F 7A20      MOV R2, #20H
+ 8011 7B03      MOV R3, #3 ; SIZE OF ARRAY - 1
                 
- 8014           INNER:
- 8014           	; R0 POINTS TO LIST[J]
- 8014 EA        	MOV A, R2
- 8015 2B        	ADD A, R3
- 8016 F8        	MOV R0, A
- 8017           	; R1 POINTS TO LIST[K]
- 8017 EA        	MOV A, R2
- 8018 2C        	ADD A, R4
- 8019 F9        	MOV R1, A
+ 8013           OUTER:
+ 8013           	;K = J - 1
+ 8013 EB        	MOV A, R3 
+ 8014 FC        	MOV R4, A
+ 8015 1C        	DEC R4
                 
- 801A           	; IF (LIST[K] > LIST[J]) THEN SWAP
- 801A E7        	MOV A, @R1
- 801B 96        	SUBB A, @R0
- 801C 4006      	JC AFTERSWAP
+ 8016           INNER:
+ 8016           	; R0 POINTS TO LIST[J]
+ 8016 EA        	MOV A, R2
+ 8017 2B        	ADD A, R3
+ 8018 F8        	MOV R0, A
+ 8019           	; R1 POINTS TO LIST[K]
+ 8019 EA        	MOV A, R2
+ 801A 2C        	ADD A, R4
+ 801B F9        	MOV R1, A
                 
- 801E           ;;;;; SWAP ;;;;;;;
+ 801C           	; IF (LIST[K] > LIST[J]) THEN SWAP
+ 801C E7        	MOV A, @R1
+ 801D 96        	SUBB A, @R0
+ 801E 4006      	JC AFTERSWAP
                 
- 801E           ; TEMP = LIST[K]
- 801E E7        MOV A, @R1
- 801F FD        MOV R5, A
+ 8020           ;;;;; SWAP ;;;;;;;
                 
- 8020           ; LIST[K] = LIST[J]
- 8020 E6        MOV A, @R0
- 8021 F7        MOV @R1, A
+ 8020           ; TEMP = LIST[K]
+ 8020 E7        MOV A, @R1
+ 8021 FD        MOV R5, A
                 
- 8022           ; LIST[J] = TEMP
- 8022 ED        MOV A, R5
- 8023 F6        MOV @R0, A
+ 8022           ; LIST[K] = LIST[J]
+ 8022 E6        MOV A, @R0
+ 8023 F7        MOV @R1, A
                 
- 8024           ;;;;; END OF SWAP ;;;;;
+ 8024           ; LIST[J] = TEMP
+ 8024 ED        MOV A, R5
+ 8025 F6        MOV @R0, A
                 
- 8024           AFTERSWAP:
- 8024           	; K--
- 8024 1C        	DEC R4
- 8025 BCFFEC    	CJNE R4, #-1, INNER
- 8028           	; J--
- 8028 DBE7      	DJNZ R3, OUTER
- 802A 80FE      	JMP $
+ 8026           ;;;;; END OF SWAP ;;;;;
+                
+ 8026           AFTERSWAP:
+ 8026           	; K--
+ 8026 1C        	DEC R4
+ 8027 BCFFEC    	CJNE R4, #-1, INNER
+ 802A           	; J--
+ 802A DBE7      	DJNZ R3, OUTER
+ 802C 80FE      	JMP $
 
  PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
 
