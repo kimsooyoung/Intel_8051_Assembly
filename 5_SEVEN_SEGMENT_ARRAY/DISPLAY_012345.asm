@@ -18,3 +18,5 @@ START:
 	MOVX @DPTR, A
 
 	JMP $
+
+END

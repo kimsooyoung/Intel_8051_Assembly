@@ -18,6 +18,8 @@
  8011 F0        	MOVX @DPTR, A
                 
  8012 80FE      	JMP $
+                
+ 8014           END
 
  PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
 

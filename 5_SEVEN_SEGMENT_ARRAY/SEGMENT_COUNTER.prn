@@ -1,20 +1,25 @@
  8000           ORG 8000H
                 
+                ; MEMORY LOCATIONS OF 7-SEG ARRAY
  FFC3           SEG1 EQU 0FFC3H
  FFC2           SEG2 EQU 0FFC2H
  FFC1           SEG3 EQU 0FFC1H
                 
+                ; INITIAL VALUES FOR EACH SEGMENTS
  8000           START:
  8000 7800      	MOV R0, #00H
  8002 7900      	MOV R1, #00H
  8004 7A00      	MOV R2, #00H
                 
+ 8006           ; MAIN LOOP
  8006           LOOP:
  8006 128036    	CALL DISPLAY_SEGMENT
  8009 12802D    	CALL DELAY
  800C 128020    	CALL INCREMENT_ARRAY
  800F 80F5      	JMP LOOP
                 
+ 8011           ; INCREMENT SECTIONS FOR HANDLING SEGMENTS
+ 8011           ; CAREFUL TO CARRY BIT & DA INSTRUCTION
  8011           INCREMENT_R0:
  8011 E8        	MOV A, R0
  8012 04        	INC A
@@ -36,24 +41,24 @@
  801E FA        	MOV R2, A
  801F 22        	RET
                 
+ 8020           ; INCREMENT THE 7 SEGMENT ARRAY
  8020           INCREMENT_ARRAY:
  8020 111B      	CALL INCREMENT_R2
  8022 BA0007    	CJNE R2, #00H, FINISH
  8025 1116      	CALL INCREMENT_R1
  8027 B90002    	CJNE R1, #00H, FINISH
  802A 1111      	CALL INCREMENT_R0
-                
  802C           FINISH:
  802C 22        	RET
                 
-                
+ 802D           ; DELAY SUBROUTINE
  802D 7E80      DELAY: MOV R6, #80H
  802F 7F80      DELAY1: MOV R7, #80H
  8031 DFFE      DELAY2: DJNZ R7, DELAY2
  8033 DEFA      	DJNZ R6, DELAY1
  8035 22        	RET
                 
-                
+ 8036           ; DISPLAY LEFT, MIDDLE, AND RIGHT SEGMENTS
  8036           DISPLAY_SEGMENT:
  8036 E8        	MOV A, R0
  8037 90FFC3    	MOV DPTR, #SEG1
