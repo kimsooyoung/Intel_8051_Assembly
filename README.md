@@ -48,6 +48,24 @@ Each Folder contains
 > Write a program to display each number in order
 > ![ROTATING_SEGMENT_NUMBER](https://user-images.githubusercontent.com/12381733/94684803-87cdf700-0363-11eb-899e-112c2b2bc75d.gif)
 
+### 4. Bubble Sort in Assembly
+
+* First, Write Bubble Sort Algorithm C code
+* Transform C code into Assembly Code
+* Check Numbers in External Memory, Are they ordered??
+
+![before sort](./IMAGES/PICTURES/SORT_1.png)
+![After sort](./IMAGES/PICTURES/SORT_2.png)
+
+
+### 5. Handling Segment Array
+
+* Display six digits onto Segment Array
+* Counts Up displays from `00 00 00` to `99 99 99`
+
+![SEGMENT_COUNTER](https://user-images.githubusercontent.com/12381733/95667909-6c56bd80-0ba7-11eb-8499-2ea3ee9b0629.gif)
+
+
 ## Reference
 
 - [MicroProcessor Class Hanyang Univ.]()
