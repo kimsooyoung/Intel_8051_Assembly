@@ -42,7 +42,7 @@ INNER:
 	MOV A, @R1
 	SUBB A, @R0
 	JC AFTERSWAP
-	; 작은거에서 큰거 빼면 CARRY BIT 발생
+	; CARRY BIT OCCURS WHEN RESULT SIGN IS MINUS
 
 ;;;;; SWAP ;;;;;;;
 
