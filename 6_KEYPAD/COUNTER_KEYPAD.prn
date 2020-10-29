@@ -1,0 +1,162 @@
+ 8000           	ORG 8000H
+ FFF0           	DATAOUT EQU 0FFF0H
+ FFF1           	DATAIN	EQU 0FFF1H
+ FFC0           	SEVENSEG EQU 0FFC0H
+ 0020           	DIGITMEM EQU 20H
+                
+                ; INITIALIZE THE 7 SEGMENT DISPLAY CODES IN MEMORY
+                
+ 8000 7820      	MOV R0, #DIGITMEM
+ 8002 74C0      	MOV A, #0C0h ; 0
+ 8004 F6        	MOV @R0, A
+ 8005 08        	INC R0
+ 8006 74F9      	MOV A, #0F9h ; 1
+ 8008 F6        	MOV @R0, A
+ 8009 08        	INC R0
+ 800A 74A4       	MOV A, #0A4h ; 2
+ 800C F6        	MOV @R0, A
+ 800D 08        	INC R0
+ 800E 74B0      	MOV A, #0B0h ; 3 
+ 8010 F6        	MOV @R0, A
+ 8011 08        	INC R0
+ 8012 7499      	MOV A, #99h ; 4 
+ 8014 F6        	MOV @R0, A
+ 8015 08        	INC R0
+ 8016 7492      	MOV A, #92h ; 5
+ 8018 F6        	MOV @R0, A
+ 8019 08        	INC R0
+ 801A 7482      	MOV A, #82h ; 6
+ 801C F6        	MOV @R0, A
+ 801D 08        	INC R0
+ 801E 74D8      	MOV A, #0D8h ; 7 
+ 8020 F6        	MOV @R0, A
+ 8021 08        	INC R0
+ 8022 7480      	MOV A, #80h ; 8
+ 8024 F6        	MOV @R0, A
+ 8025 08        	INC R0
+ 8026 7490      	MOV A, #90h ; 9
+ 8028 F6        	MOV @R0, A
+ 8029 08        	INC R0
+                
+ 802A           ;INITIALIZE DATAOUT TO READ THE FIRST COLUMN OF THE KEYPAD
+                
+ 802A           START:
+ 802A 7900      	MOV R1, #0
+ 802C 90FFF0    	MOV DPTR, #DATAOUT
+ 802F 74EF      	MOV A, #11101111b
+ 8031 F0        	MOVX @DPTR, A
+                
+ 8032           ; MAIN LOOP
+ 8032           LOOP:
+ 8032 128040    	CALL DISPLAY
+ 8035 12809E    	CALL DELAY
+ 8038 12804A    	CALL KEYSCAN
+ 803B 128054    	CALL INCDEC
+ 803E 80F2      	JMP LOOP
+ 8040           ; END OF THE MAIN LOOP
+                
+ 8040           ; DISPLAY THE NUMBER ON THE 7 SEG
+ 8040           DISPLAY:
+ 8040 7420      	MOV A, #DIGITMEM
+ 8042 29        	ADD A, R1
+ 8043 F8        	MOV R0, A
+ 8044 E6        	MOV A, @R0
+ 8045 90FFC0    	MOV DPTR, #SEVENSEG
+ 8048 F0        	MOVX @DPTR, A
+ 8049 22        	RET
+                
+ 804A           KEYSCAN:
+ 804A 90FFF1    	MOV DPTR, #DATAIN
+ 804D E0        	MOVX A, @DPTR
+ 804E 44E0      	ORL A, #11100000b
+ 8050 64FF      	XRL A, #11111111b
+ 8052 FA        	MOV R2, A
+ 8053 22        	RET
+                
+ 8054           ; INCREMENT OR DECREMENT THE COUNTER INCDEC
+ 8054           INCDEC:
+ 8054           ; IF 0 PRESSED, DECREMENT COUNTER BY 2
+ 8054           TEST0:
+ 8054 EA        	MOV A, R2
+ 8055 B41007    	CJNE A, #00010000b TEST4
+ 8058 E9        	MOV A, R1
+ 8059 2408      	ADD A, #8 ; +10 - 2
+ 805B F9        	MOV R1, A
+ 805C 028096    	JMP MOD10
+                
+ 805F           ; IF 4 PRESSED, DECREMENT COUNTER BY 1
+ 805F           TEST4:
+ 805F EA        	MOV A, R2
+ 8060 B40807    	CJNE A, #00001000b TEST04
+ 8063 E9        	MOV A, R1
+ 8064 2409      	ADD A, #9 ; +10 - 1
+ 8066 F9        	MOV R1, A
+ 8067 028096    	JMP MOD10
+                
+ 806A           ; IF 0 and 4 PRESSED, DECREMENT COUNTER BY 3
+ 806A           TEST04:
+ 806A EA        	MOV A, R2
+ 806B B41807    	CJNE A, #00011000b TEST8
+ 806E E9        	MOV A, R1
+ 806F 2407      	ADD A, #7 ; +10 - 3
+ 8071 F9        	MOV R1, A
+ 8072 028096    	JMP MOD10
+                
+ 8075           ; IF 8 PRESSED, DECREMENT COUNTER BY 1
+ 8075           TEST8:
+ 8075 EA        	MOV A, R2
+ 8076 B40407    	CJNE A, #00000100b TESTC
+ 8079 E9        	MOV A, R1
+ 807A 2401      	ADD A, #1
+ 807C F9        	MOV R1, A
+ 807D 028096    	JMP MOD10
+                
+ 8080           ; IF C PRESSED, DECREMENT COUNTER BY 2
+ 8080           TESTC:
+ 8080 EA        	MOV A, R2
+ 8081 B40207    	CJNE A, #00000010b TESTC8
+ 8084 E9        	MOV A, R1
+ 8085 2402      	ADD A, #2
+ 8087 F9        	MOV R1, A
+ 8088 028096    	JMP MOD10
+                
+ 808B           ; IF C AND 8 PRESSED, DECREMENT COUNTER BY 3
+ 808B           TESTC8:
+ 808B EA        	MOV A, R2
+ 808C B40607    	CJNE A, #00000110b MOD10
+ 808F E9        	MOV A, R1
+ 8090 2403      	ADD A, #3 ; 1 + 2
+ 8092 F9        	MOV R1, A
+ 8093 028096    	JMP MOD10
+                
+ 8096           ; IF R1 >= 10 THEN R1 = R1 % 10
+ 8096           ; IF R1 < 10 THEN R1 IS UNCHANGED
+ 8096           MOD10:
+ 8096 E9        	MOV A, R1
+ 8097 75F00A    	MOV B, #10
+ 809A 84        	DIV AB
+ 809B A9F0      	MOV R1, B
+ 809D 22        	RET
+                
+ 809E           ;DELAY FUNCTION
+ 809E           DELAY:	
+ 809E 7D07      	MOV R5, #7h
+ 80A0           DELAY1:
+ 80A0 7EFF      	MOV R6, #0FFh
+ 80A2           DELAY2:
+ 80A2 7FFF      	MOV R7, #0FFh
+ 80A4           DELAY3:
+ 80A4 DFFE      	DJNZ R7, DELAY3
+ 80A6 DEFA      	DJNZ R6, DELAY2
+ 80A8 DDF6      	DJNZ R5, DELAY1
+ 80AA 22        	RET
+ 80AB           END
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\6_KEYPAD\COUNTER_KEYPAD.ASM
+
+
+

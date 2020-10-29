@@ -1,0 +1,38 @@
+ 8000           	ORG 8000H
+ FFF0           	DATAOUT EQU 0FFF0H
+ FFF1           	DATAIN	EQU 0FFF1H
+                
+                ;WRITE TO '01111' TO DATAOUT,
+                ;SO ONLY THE FIRST COLUMN OF KEYS
+                ;ON THE KEYPAD ARE READ
+                
+ 8000 90FFF0    	MOV DPTR, #DATAOUT
+ 8003 74EF      	MOV A, #11101111B
+ 8005 F0        	MOVX @DPTR, A
+                
+ 8006           LOOP:
+ 8006 12800E    	CALL KEYSCAN
+ 8009 128016    	CALL DISPLAY
+ 800C 80F8      	JMP LOOP
+                
+ 800E           KEYSCAN:
+ 800E 90FFF1    	MOV DPTR, #DATAIN
+ 8011 E0        	MOVX A, @DPTR
+ 8012 44E0      	ORL A, #11100000B
+ 8014 F8        	MOV R0, A
+ 8015 22        	RET
+                
+ 8016           DISPLAY:
+ 8016 E8        	MOV A, R0
+ 8017 F590      	MOV P1, A
+ 8019 22        	RET
+ 801A           END
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\6_KEYPAD\CONTROL_DIODE_USING_FIRST_COLUMN.ASM
+
+
+
