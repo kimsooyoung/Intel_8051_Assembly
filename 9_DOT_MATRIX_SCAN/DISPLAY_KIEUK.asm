@@ -1,0 +1,68 @@
+GREENCOL EQU 0FFC5H
+REDCOL 	 EQU 0FFC6H
+ROW 	 EQU 0FFC7H
+TEMP	 EQU 30H
+
+	ORG 8000H
+
+mainLoop:
+	CALL initRow
+	CALL rowLoop
+	SJMP mainLoop
+
+initRow:
+	MOV R0, #00000001B
+	MOV R1, #00000000B
+	MOV R2, #00000000B
+	MOV R3, #00H
+	CLR C
+	RET
+
+rowLoop:
+	CALL getRow
+	CALL displayDots
+	CALL delay
+	CALL advanceRow
+	JNC rowLoop
+	RET
+
+advanceRow:
+	MOV A, R0
+	RLC A
+	MOV R0, A
+	INC R3
+	RET
+
+getRow:
+	MOV DPTR, #charNium
+	MOV A, R3
+	MOVC A, @A+DPTR
+	MOV R2, A
+	RET
+
+delay:
+	MOV R5, #7h
+DELAY1: MOV R6, #40h
+DELAY2: DJNZ R6, DELAY2
+	DJNZ R5, DELAY1
+	RET
+
+displayDots:
+	MOV DPTR, #ROW
+	MOV A, R0
+	MOVX @DPTR, A
+	MOV DPTR, #GREENCOL
+	MOV A, R1
+	MOVX @DPTR, A
+	MOV DPTR, #REDCOL
+	MOV A, R2
+	MOVX @DPTR, A
+	RET
+
+	; REVERSED
+	charNium:
+		; DATA BYTE
+		;DB 00H, 40H, 40H, 40H
+		;DB 40H, 40H, 7EH, 00H
+		DB 00H, 00H, 24H, 00H
+		DB 42H, 3CH, 00H, 00H

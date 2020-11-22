@@ -1,0 +1,145 @@
+ FFC5           GREENCOL EQU 0FFC5H
+ FFC6           REDCOL 	 EQU 0FFC6H
+ FFC7           ROW 	 EQU 0FFC7H
+                
+ 8000           	ORG 8000H
+                
+                ; MAIN LOOP
+ 8000           MainLoop:
+                	;CALL KEYSCAN
+ 8000 12800E    	CALL INITGREEN
+ 8003 128026    	CALL LOOPGREEN
+ 8006 128016    	CALL INITRED
+ 8009 12803D    	CALL LOOPRED
+ 800C 80F2      	SJMP MainLoop
+                
+ 800E           INITGREEN:
+ 800E 7801      	MOV R0, #00000001B
+ 8010 7901      	MOV R1, #00000001B
+ 8012 7A00      	MOV R2, #00000000B
+ 8014 C3        	CLR C
+ 8015 22        	RET
+                
+ 8016           INITRED:
+ 8016 7801      	MOV R0, #00000001B
+ 8018 7900      	MOV R1, #00000000B
+ 801A 7A01      	MOV R2, #00000001B
+ 801C C3        	CLR C
+ 801D 22        	RET
+                
+ 801E           INNERGREEN:
+ 801E E8        	MOV A, R0
+ 801F 33        	RLC A
+ 8020 F8        	MOV R0, A
+                	
+ 8021 7901      	MOV R1, #00000001B
+ 8023 5001      	JNC LOOPGREEN
+                
+ 8025 22        	RET
+                
+ 8026           LOOPGREEN:
+ 8026 128074    	CALL DISPLAYDOT
+ 8029 128084    	CALL DELAY
+                	
+ 802C E9        	MOV A, R1
+ 802D 33        	RLC A
+ 802E F9        	MOV R1, A
+                
+ 802F 50F5      	JNC LOOPGREEN
+ 8031 C3        	CLR C
+ 8032 111E      	CALL INNERGREEN
+ 8034 22        	RET
+                
+ 8035           INNERRED:
+ 8035 E8        	MOV A, R0
+ 8036 33        	RLC A
+ 8037 F8        	MOV R0, A
+                	
+ 8038 7A01      	MOV R2, #00000001B
+ 803A 5001      	JNC LOOPRED
+                
+ 803C 22        	RET
+                
+ 803D           LOOPRED:
+ 803D 128074    	CALL DISPLAYDOT
+ 8040 128084    	CALL DELAY
+                	
+ 8043 EA        	MOV A, R2
+ 8044 33        	RLC A
+ 8045 FA        	MOV R2, A
+                
+ 8046 50F5      	JNC LOOPRED
+ 8048 C3        	CLR C
+ 8049 1135      	CALL INNERRED
+ 804B 22        	RET
+                
+                
+ 804C           ;Turn off all Dots
+ 804C           SetDotsOff:
+ 804C 7800      	MOV R0, #00H
+ 804E 7900      	MOV R1, #00H
+ 8050 7A00      	MOV R2, #00H
+                
+ 8052 128074    	CALL DISPLAYDOT
+ 8055 22        	RET
+                
+ 8056           ; SELECT THE GREEN COLOR
+ 8056           SetDotsGreen:
+ 8056 78FF      	MOV R0, #0FFH
+ 8058 79FF      	MOV R1, #0FFH
+ 805A 7A00      	MOV R2, #00H
+                
+ 805C 128074    	CALL DISPLAYDOT
+ 805F 22        	RET
+                	
+ 8060           ; SELECT THE RED COLOR
+ 8060           SetDotsRed:
+ 8060 78FF      	MOV R0, #0FFH
+ 8062 7900      	MOV R1, #00H
+ 8064 7AFF      	MOV R2, #0FFH
+                
+ 8066 128074    	CALL DISPLAYDOT
+ 8069 22        	RET
+                
+ 806A           ; SELECT BOTH GREEN+RED COLOR
+ 806A           SetDotsGreenRed:
+ 806A 78FF      	MOV R0, #0FFH
+ 806C 79FF      	MOV R1, #0FFH
+ 806E 7AFF      	MOV R2, #0FFH
+                
+ 8070 128074    	CALL DISPLAYDOT
+ 8073 22        	RET
+                
+                
+ 8074           DISPLAYDOT:
+ 8074 90FFC5    	MOV DPTR, #GREENCOL
+ 8077 E9        	MOV A, R1
+ 8078 F0        	MOVX @DPTR, A
+                
+ 8079 90FFC6    	MOV DPTR, #REDCOL
+ 807C EA        	MOV A, R2
+ 807D F0        	MOVX @DPTR, A
+                
+ 807E 90FFC7    	MOV DPTR, #ROW
+ 8081 E8        	MOV A, R0
+ 8082 F0        	MOVX @DPTR, A
+ 8083 22        	RET
+                
+ 8084 7D01      Delay: MOV R5, #1
+ 8086 7EFF      DELAY1: MOV R6, #0FFH
+ 8088 7FFF      DELAY2: MOV R7, #0FFH
+ 808A DFFE      DELAY3: DJNZ R7, DELAY3
+ 808C DEFA      	DJNZ R6, DELAY2
+ 808E DDF6      	DJNZ R5, DELAY1
+ 8090 22        	RET
+                
+
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\8_DOT_MATRIX\DOT_MATRIX_ASSIGNMENT_FOR_FUN.ASM
+
+
+

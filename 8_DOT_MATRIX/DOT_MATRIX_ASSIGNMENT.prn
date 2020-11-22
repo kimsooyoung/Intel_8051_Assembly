@@ -1,0 +1,128 @@
+ FFFFFFFF           ; DOT MATRIX COLOR CHANGE
+                
+ FFC5           GREENCOL EQU 0FFC5H
+ FFC6           REDCOL 	 EQU 0FFC6H
+ FFC7           ROW 	 EQU 0FFC7H
+                
+ 8000           	ORG 8000H
+                
+                ; MAIN LOOP
+ 8000           MainLoop:
+ 8000 12800E    	CALL INITGREEN
+ 8003 12801E    	CALL LOOPGREEN
+ 8006 128016    	CALL INITRED
+ 8009 12802A    	CALL LOOPRED
+ 800C 80F2      	SJMP MainLoop
+                
+ 800E           ; TURN ON FIRST COLUMN AND GREEN ROWS
+ 800E           INITGREEN:
+ 800E 78FF      	MOV R0, #11111111B
+ 8010 7901      	MOV R1, #00000001B
+ 8012 7A00      	MOV R2, #00000000B
+ 8014 C3        	CLR C
+ 8015 22        	RET
+                
+ 8016           ; TURN ON FIRST COLUMN AND RED ROWS
+ 8016           INITRED:
+ 8016 78FF      	MOV R0, #11111111B
+ 8018 7900      	MOV R1, #00000000B
+ 801A 7A01      	MOV R2, #00000001B
+ 801C C3        	CLR C
+ 801D 22        	RET
+                
+ 801E           ; ROTATE COLUMN TO RIGHT WITH CARRY BIT
+ 801E           LOOPGREEN:
+ 801E 12805E    	CALL DISPLAYDOT
+ 8021 12806E    	CALL DELAY
+                	
+ 8024           	; ADVANCE TO THE NEXT ROW
+ 8024 E9        	MOV A, R1
+ 8025 33        	RLC A
+ 8026 F9        	MOV R1, A
+                
+ 8027           	; TEST IF THIS IS THE LAST ROW
+ 8027 50F5      	JNC LOOPGREEN
+ 8029 22        	RET
+                
+ 802A           ; ROTATE COLUMN TO LEFT WITH CARRY BIT
+ 802A           LOOPRED:
+ 802A 12805E    	CALL DISPLAYDOT
+ 802D 12806E    	CALL DELAY
+                	
+ 8030 EA        	MOV A, R2
+ 8031 33        	RLC A
+ 8032 FA        	MOV R2, A
+                
+ 8033 50F5      	JNC LOOPRED
+ 8035 22        	RET
+                
+ 8036           ;Turn off all Dots
+ 8036           SetDotsOff:
+ 8036 7800      	MOV R0, #00H
+ 8038 7900      	MOV R1, #00H
+ 803A 7A00      	MOV R2, #00H
+                
+ 803C 12805E    	CALL DISPLAYDOT
+ 803F 22        	RET
+                
+ 8040           ; SELECT THE GREEN COLOR
+ 8040           SetDotsGreen:
+ 8040 78FF      	MOV R0, #0FFH
+ 8042 79FF      	MOV R1, #0FFH
+ 8044 7A00      	MOV R2, #00H
+                
+ 8046 12805E    	CALL DISPLAYDOT
+ 8049 22        	RET
+                	
+ 804A           ; SELECT THE RED COLOR
+ 804A           SetDotsRed:
+ 804A 78FF      	MOV R0, #0FFH
+ 804C 7900      	MOV R1, #00H
+ 804E 7AFF      	MOV R2, #0FFH
+                
+ 8050 12805E    	CALL DISPLAYDOT
+ 8053 22        	RET
+                
+ 8054           ; SELECT BOTH GREEN+RED COLOR
+ 8054           SetDotsGreenRed:
+ 8054 78FF      	MOV R0, #0FFH
+ 8056 79FF      	MOV R1, #0FFH
+ 8058 7AFF      	MOV R2, #0FFH
+                
+ 805A 12805E    	CALL DISPLAYDOT
+ 805D 22        	RET
+                
+ 805E           ; DISPLAY REGISTER VALUES ONTO DOT MATRIX
+ 805E           DISPLAYDOT:
+ 805E 90FFC5    	MOV DPTR, #GREENCOL
+ 8061 E9        	MOV A, R1
+ 8062 F0        	MOVX @DPTR, A
+                
+ 8063 90FFC6    	MOV DPTR, #REDCOL
+ 8066 EA        	MOV A, R2
+ 8067 F0        	MOVX @DPTR, A
+                
+ 8068 90FFC7    	MOV DPTR, #ROW
+ 806B E8        	MOV A, R0
+ 806C F0        	MOVX @DPTR, A
+ 806D 22        	RET
+                
+ 806E           ; DELAY PROCEDURE
+ 806E 7D07      Delay: MOV R5, #7
+ 8070 7EFF      DELAY1: MOV R6, #0FFH
+ 8072 7FFF      DELAY2: MOV R7, #0FFH
+ 8074 DFFE      DELAY3: DJNZ R7, DELAY3
+ 8076 DEFA      	DJNZ R6, DELAY2
+ 8078 DDF6      	DJNZ R5, DELAY1
+ 807A 22        	RET
+                
+
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\8_DOT_MATRIX\DOT_MATRIX_ASSIGNMENT.ASM
+
+
+

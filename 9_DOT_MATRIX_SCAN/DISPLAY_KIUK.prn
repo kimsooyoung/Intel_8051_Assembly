@@ -1,0 +1,76 @@
+ FFC5           GREENCOL EQU 0FFC5H
+ FFC6           REDCOL 	 EQU 0FFC6H
+ FFC7           ROW 	 EQU 0FFC7H
+ 0030           TEMP	 EQU 30H
+                
+ 8000           	ORG 8000H
+                
+ 8000           mainLoop:
+ 8000 128008    	CALL initRow
+ 8003 128012    	CALL rowLoop
+ 8006 80F8      	SJMP mainLoop
+                
+ 8008           initRow:
+ 8008 7801      	MOV R0, #00000001B
+ 800A 7900      	MOV R1, #00000000B
+ 800C 7A00      	MOV R2, #00000000B
+ 800E 7B00      	MOV R3, #00H
+ 8010 C3        	CLR C
+ 8011 22        	RET
+                
+ 8012           rowLoop:
+ 8012 128026    	CALL getRow
+ 8015 128036    	CALL displayDots
+ 8018 12802D    	CALL delay
+ 801B 128021    	CALL advanceRow
+ 801E 50F2      	JNC rowLoop
+ 8020 22        	RET
+                
+ 8021           advanceRow:
+ 8021 E8        	MOV A, R0
+ 8022 33        	RLC A
+ 8023 F8        	MOV R0, A
+ 8024 0B        	INC R3
+ 8025 22        	RET
+                
+ 8026           getRow:
+ 8026 908046    	MOV DPTR, #charKiuk
+ 8029 EB        	MOV A, R3
+ 802A 93        	MOVC A, @A+DPTR
+ 802B FA        	MOV R2, A
+ 802C 22        	RET
+                
+ 802D           delay:
+ 802D 7D07      	MOV R5, #7h
+ 802F 7E40      DELAY1: MOV R6, #40h
+ 8031 DEFE      DELAY2: DJNZ R6, DELAY2
+ 8033 DDFA      	DJNZ R5, DELAY1
+ 8035 22        	RET
+                
+ 8036           displayDots:
+ 8036 90FFC7    	MOV DPTR, #ROW
+ 8039 E8        	MOV A, R0
+ 803A F0        	MOVX @DPTR, A
+ 803B 90FFC5    	MOV DPTR, #GREENCOL
+ 803E E9        	MOV A, R1
+ 803F F0        	MOVX @DPTR, A
+ 8040 90FFC6    	MOV DPTR, #REDCOL
+ 8043 EA        	MOV A, R2
+ 8044 F0        	MOVX @DPTR, A
+ 8045 22        	RET
+                
+ 8046           	; REVERSED
+ 8046           	charKiuk:
+ 8046           		; DATA BYTE
+ 8046 007E4040  		DB 00H, 7EH, 40H, 40H
+ 804A 40404000  		DB 40H, 40H, 40H, 00H
+
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\9_DOT_MATRIX_SCAN\DISPLAY_KIUK.ASM
+
+
+

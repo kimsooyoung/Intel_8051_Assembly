@@ -1,0 +1,157 @@
+ FFFFFFFF           ;***********************************
+ FFFFFFFF           ; LCD address on the 8051 board
+                
+ FFE0           LCDWIR          EQU 0FFE0H; LCD IR Write
+ FFE1           LCDWDR          EQU 0FFE1H; LCD DR Wrtie
+ FFE2           LCDRIR          EQU 0FFE2H; LCD IR Read
+ FFE3           LCDRDR          EQU 0FFE3H; LCD DR Read
+                
+ FFFFFFFF           ; DEFINE VARIABLES
+ FFFFFFFF           ;***********************************
+                
+ 0020           INST            EQU 20H; LCD INSTRUCTION value storage
+ 0021           DATA            EQU 21H; LCD DATA value storage
+ 0022           LROW            EQU 22H; LCD display coordinate: value of column storage
+ 0023           LCOL            EQU 23H; LCD display coordinate: value of row storage
+ 0024           MESSAGE_LEN     EQU 24H; Message Length
+ 0025           FDPL            EQU 25H; DPL value storage
+ 0026           FDPH            EQU 26H; DPH value storage
+                
+ FFFFFFFF           ; DEFINE LCD INSTRUCTION
+ FFFFFFFF           ;***********************************
+ 0001           CLEAR           EQU 01H; CLEAR command
+ FFFFFFFF           ;Cursor home
+ 0002           CUR_HOME        EQU 02H; CURSOR Home position move
+ FFFFFFFF           ; Cursor direction of progress control
+ 0006           ENTRY2          EQU 06H; Address +1, cursor or blink shift right, display x
+ FFFFFFFF           ; Display On/Off control
+ 000E           DCB6            EQU 0EH; Display On, Cursor On, Blink Off
+ FFFFFFFF           ;Function setting
+ 0038           FUN5            EQU 38H; 8bit 2 column 5*7
+                
+ FFFFFFFF           ; DDRAM Address setting
+ 0080           LINE_1          EQU 080H; move LCD 1 line
+ 00C0           LINE_2          EQU 0C0H; move LCD 2 line
+                
+ FFFFFFFF           ; initialize the LCD
+ 0000           LCD_INIT:
+ 0000 752038        MOV INST, #FUN5
+ 0003 12007D        CALL WRITE_INST
+                
+ 0006 75200E        MOV INST, #DCB6
+ 0009 12007D        CALL WRITE_INST
+                
+ 000C 752001        MOV INST, #CLEAR
+ 000F 12007D        CALL WRITE_INST
+                
+ 0012 752006        MOV INST, #ENTRY2
+ 0015 12007D        CALL WRITE_INST
+                
+ 0018           ; Display message on the LCD
+ 0018           LCD_MSG:  
+ 0018 752201        MOV LROW, #01H
+ 001B 752302        MOV LCOL, #02H
+ 001E 12005F        CALL MOV_CURSOR
+                
+ 0021 900099        MOV DPTR, #MESSGAE1
+ 0024 858225        MOV FDPL, DPL
+ 0027 858326        MOV FDPH, DPH
+ 002A 75240E        MOV MESSAGE_LEN, #0EH
+ 002D 12004A        CALL DISPLAY_MESSAGE
+                
+ 0030 752202        MOV LROW, #02H
+ 0033 752302        MOV LCOL, #02H
+ 0036 12005F        CALL MOV_CURSOR
+                
+ 0039 9000A4        MOV DPTR, #MESSAGE2
+ 003C 858225        MOV FDPL, DPL
+ 003F 858326        MOV FDPH, DPH
+ 0042 75240E        MOV MESSAGE_LEN, #0EH
+ 0045 12004A        CALL DISPLAY_MESSAGE
+ 0048 80FE          JMP $
+                
+ 004A           ;***********************************
+ 004A           ;***********************************
+                
+ 004A           DISPLAY_MESSAGE:
+ 004A 7D00          MOV R5, #00H
+ 004C           FLOOP:
+ 004C 852582        MOV DPL, FDPL
+ 004F 852683        MOV DPH, FDPH
+ 0052 ED            MOV A, R5
+ 0053 93            MOVC A, @A+DPTR
+ 0054 F521          MOV DATA, A
+ 0056 12007D        CALL WRITE_INST
+ 0059 0D            INC R5
+ 005A ED            MOV A, R5
+ 005B B524EE        CJNE A, MESSAGE_LEN, FLOOP
+ 005E 22            RET
+                
+ 005F           ;***********************************
+ 005F           ;***********************************
+                
+ 005F           MOV_CURSOR:
+ 005F E522          MOV A, LROW
+ 0061 B4010C        CJNE A, #01H, ROW_2
+ 0064           ROW_1:
+ 0064 7480          MOV A, #LINE_1
+ 0066 2523          ADD A, LCOL
+ 0068 F520          MOV INST, A
+ 006A 12007D        CALL WRITE_INST
+ 006D 02007C        JMP RET_POINT
+ 0070           ROW_2:
+ 0070 B40209        CJNE A, #02H, RET_POINT
+ 0073 74C0          MOV A, #LINE_2
+ 0075 2523          ADD A, LCOL
+ 0077 F520          MOV INST, A
+ 0079 12007D        CALL WRITE_INST
+ 007C           RET_POINT:
+ 007C 22            RET
+                
+ 007D           ;***********************************
+ 007D           ;***********************************
+                
+ 007D           WRITE_INST:
+ 007D 120091        CALL WAIT_UNTIL_READY
+ 0080 90FFE0        MOV DPTR, #LCDWIR
+ 0083 E520          MOV A, INST
+ 0085 F0            MOVX @DPTR, A
+ 0086 22            RET
+                
+ 0087           ;***********************************
+ 0087           ;***********************************
+                
+ 0087           WRITE_DATA:
+ 0087 120091        CALL WAIT_UNTIL_READY
+ 008A 90FFE1        MOV DPTR, #LCDWDR
+ 008D E521          MOV A, DATA
+ 008F F0            MOVX @DPTR, A
+ 0090 22            RET
+                
+ 0091           ;***********************************
+ 0091           ;***********************************
+                
+ 0091           WAIT_UNTIL_READY:
+ 0091 90FFE2        MOV DPTR, #LCDRIR
+ 0094 E0            MOVX A, @DPTR
+ 0095 20E7F9        JB ACC.7, WAIT_UNTIL_READY
+ 0098 22            RET
+                
+ 0099           MESSGAE1:
+ 0099 444F594F      DB 'D','O','','Y','O'
+ 009D 55524245      DB 'U','R','','B','E'
+ 00A1 535421        DB 'S','T','','!'
+ 00A4           MESSAGE2:
+ 00A4 594F5543      DB 'Y','O','U','','C'
+ 00A8 414E444F      DB 'A','N','','D','O'
+ 00AC 495421        DB '','I','T','!'
+ 00AF           END
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\10_LCD\LCD_WRITE.ASM
+
+
+

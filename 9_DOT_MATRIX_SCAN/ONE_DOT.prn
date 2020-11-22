@@ -1,0 +1,64 @@
+ FFC5           GREENCOL EQU 0FFC5H
+ FFC6           REDCOL 	 EQU 0FFC6H
+ FFC7           ROW 	 EQU 0FFC7H
+                
+ 8000           	ORG 8000H
+                
+ 8000           init:
+ 8000 7801      	MOV R0, #00000001B
+ 8002 7901      	MOV R1, #00000001B
+ 8004 7A00      	MOV R2, #00000000B
+ 8006 C3        	CLR C
+                
+ 8007           mainLoop:
+ 8007 12800F    	CALL columnLoop
+ 800A 128018    	CALL advanceColumn
+ 800D 80F8      	SJMP mainLoop
+                
+ 800F           columnLoop:
+ 800F 128029    	CALL displayDots
+ 8012           	;CALL delay
+ 8012 E8        	MOV A, R0
+ 8013 33        	RLC A
+ 8014 F8        	MOV R0, A
+ 8015 50F8      	JNC columnLoop
+ 8017 22        	RET
+                
+ 8018           advanceColumn: 
+ 8018 E9        	MOV A, R1
+ 8019 23        	RL A
+ 801A F9        	MOV R1, A
+ 801B 22        	RET
+                
+ 801C           delay:
+ 801C 7D07      	MOV R5, #7h
+ 801E 7EFF      DELAY1: MOV R6, #0FFh
+ 8020 7FFF      DELAY2: MOV R7, #0FFh
+ 8022 DFFE      DELAY3: DJNZ R7, DELAY3
+ 8024 DEFA      	DJNZ R6, DELAY2
+ 8026 DDF6      	DJNZ R5, DELAY1
+ 8028 22        	RET
+                
+ 8029           displayDots:
+ 8029 90FFC7    	MOV DPTR, #ROW
+ 802C E8        	MOV A, R0
+ 802D F0        	MOVX @DPTR, A
+ 802E 90FFC5    	MOV DPTR, #GREENCOL
+ 8031 E9        	MOV A, R1
+ 8032 F0        	MOVX @DPTR, A
+ 8033 90FFC6    	MOV DPTR, #REDCOL
+ 8036 EA        	MOV A, R2
+ 8037 F0        	MOVX @DPTR, A
+ 8038 22        	RET
+                
+                
+
+
+ PUSAN NATIONAL UNIVERSITY  8051 CROSS-ASSEMBLER        VERSION 1.20
+
+                          Multiware & Image
+
+ SOURCE FILE NAME: C:\USERS\TGE13\DOCUMENTS\2학년_2학기\MICROPROCESSOR\9_DOT_MATRIX_SCAN\ONE_DOT.ASM
+
+
+
